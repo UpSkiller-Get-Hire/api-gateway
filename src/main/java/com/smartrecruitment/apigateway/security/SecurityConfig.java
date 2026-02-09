@@ -48,15 +48,10 @@ public class SecurityConfig {
         return http
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
-                        // Public endpoints - no authentication required
-                        .pathMatchers("/auth-service/auth/login").permitAll()
-                        .pathMatchers("/auth-service/auth/signup").permitAll()
-                        .pathMatchers("/actuator/**").permitAll()
-                        .pathMatchers("/eureka/**").permitAll()
-                        // All other requests require authentication
-                        .anyExchange().authenticated()
+                        // Gateway allows requests
+                        .anyExchange().permitAll()
                 )
-                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> {}))
                 .build();
     }
+
 }

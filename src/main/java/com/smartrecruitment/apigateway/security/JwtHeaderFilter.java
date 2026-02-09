@@ -1,7 +1,8 @@
 package com.smartrecruitment.apigateway.security;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder;
 import org.springframework.web.server.ServerWebExchange;
@@ -22,12 +23,20 @@ public class JwtHeaderFilter implements GlobalFilter, Ordered {
                               org.springframework.cloud.gateway.filter.GatewayFilterChain chain
     ){
 
-        String authHeader = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        String path = exchange.getRequest().getURI().getPath();
+        if(path.startsWith("/auth-service/")){
             return chain.filter(exchange);
         }
-        String token = authHeader.substring(7);
+
+        HttpCookie accessTokenCookie = exchange.getRequest().getCookies().getFirst("accessToken");
+
+        System.out.println("🍪 accessToken cookie = " + accessTokenCookie);
+
+        if (accessTokenCookie == null) {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
+        }
+        String token = accessTokenCookie.getValue();
 
         return jwtDecoder.decode(token)
                 .flatMap(jwt -> {

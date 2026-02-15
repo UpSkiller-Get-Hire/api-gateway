@@ -30,7 +30,7 @@ public class JwtHeaderFilter implements GlobalFilter, Ordered {
 
         HttpCookie accessTokenCookie = exchange.getRequest().getCookies().getFirst("accessToken");
 
-        System.out.println("🍪 accessToken cookie = " + accessTokenCookie);
+
 
         if (accessTokenCookie == null) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);

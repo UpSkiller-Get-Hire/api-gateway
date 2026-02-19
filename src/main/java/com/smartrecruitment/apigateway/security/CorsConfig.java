@@ -17,7 +17,7 @@ public class CorsConfig {
 
         CorsConfiguration config = new CorsConfiguration();
 
-        config.setAllowedOrigins(Arrays.asList("http://localhost:49681"));
+        config.setAllowedOrigins(Arrays.asList("https://smart.local"));
 
         config.setAllowCredentials(true);
 
